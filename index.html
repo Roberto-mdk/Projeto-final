@@ -43,12 +43,30 @@
                 autocomplete="off"
             >
 
-            <div class="cabecalho-lista">
-                <h2>Lugares históricos</h2>
-                <span id="contador">0 locais</span>
-            </div>
+           
+<div class="filtros">
+    <label for="categoria">Filtrar por categoria</label>
 
-            <div id="lista-lugares" class="lista-lugares"></div>
+    <select id="categoria">
+        <option value="todas">Todas as categorias</option>
+        <option value="cultura">Cultura</option>
+        <option value="rua">Ruas e praças</option>
+        <option value="patrimonio">Patrimônio histórico</option>
+        <option value="comercio">Comércio tradicional</option>
+    </select>
+</div>
+
+<div class="cabecalho-lista">
+    <h2>Lugares históricos</h2>
+    <span id="contador">0 locais</span>
+</div>
+
+<div id="lista-lugares" class="lista-lugares"></div>
+
+<button id="voltar-mapa" type="button" class="botao-voltar">
+    Ver toda a região
+</button>
+
 
             <p class="aviso">
                 Conteúdo demonstrativo. As informações históricas e
