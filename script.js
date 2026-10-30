@@ -1,60 +1,169 @@
 
+
+"use strict";
+
+// ========================================
+// 1. DADOS DOS LUGARES
+// Os textos e coordenadas são demonstrativos.
+// Confira os dados antes de publicar.
+// ========================================
+
 const lugares = [
     {
         id: 1,
         nome: "Marco Zero",
-        categoria: "Praça e referência histórica",
-        descricao: "Ponto conhecido do Bairro do Recife e referência para explorar a região histórica.",
+        categoria: "rua",
+        categoriaNome: "Praças e referências urbanas",
+        descricao:
+            "Referência urbana localizada na Praça Rio Branco, no Bairro do Recife.",
+        periodo: "Contexto histórico a pesquisar",
+        endereco: "Praça Rio Branco, Bairro do Recife, Recife - PE",
         latitude: -8.0631,
-        longitude: -34.8711
+        longitude: -34.8711,
+        fonte: "Consultar fontes oficiais e patrimoniais."
     },
     {
         id: 2,
         nome: "Rua do Bom Jesus",
-        categoria: "Rua histórica",
-        descricao: "Uma rua emblemática do Recife Antigo, associada à história urbana e cultural da cidade.",
+        categoria: "rua",
+        categoriaNome: "Ruas e praças",
+        descricao:
+            "Rua histórica do Bairro do Recife, importante para conhecer a formação urbana da região.",
+        periodo: "História urbana do Recife",
+        endereco: "Bairro do Recife, Recife - PE",
         latitude: -8.0618,
-        longitude: -34.8715
+        longitude: -34.8715,
+        fonte: "Consultar fontes oficiais e patrimoniais."
     },
     {
         id: 3,
         nome: "Paço do Frevo",
-        categoria: "Cultura e patrimônio",
-        descricao: "Espaço cultural dedicado à memória, à documentação e à difusão do frevo.",
+        categoria: "cultura",
+        categoriaNome: "Cultura",
+        descricao:
+            "Equipamento cultural dedicado à salvaguarda, pesquisa e difusão do frevo.",
+        periodo: "Cultura popular pernambucana",
+        endereco: "Praça do Arsenal da Marinha, Bairro do Recife, Recife - PE",
         latitude: -8.0617,
-        longitude: -34.8710
+        longitude: -34.8710,
+        fonte: "Consultar o site oficial do Paço do Frevo."
     },
     {
         id: 4,
         nome: "Forte do Brum",
-        categoria: "Fortificação histórica",
-        descricao: "Fortificação histórica que ajuda a contar a história militar e urbana do Recife.",
+        categoria: "patrimonio",
+        categoriaNome: "Patrimônio histórico",
+        descricao:
+            "Fortificação histórica ligada à história militar e à defesa da região do Recife.",
+        periodo: "Período colonial e história militar",
+        endereco: "Bairro do Recife, Recife - PE",
         latitude: -8.0525,
-        longitude: -34.8714
+        longitude: -34.8714,
+        fonte: "Consultar fontes oficiais do museu e do patrimônio."
     },
     {
         id: 5,
         nome: "Mercado de São José",
-        categoria: "Mercado e patrimônio",
-        descricao: "Mercado histórico ligado ao comércio tradicional e à vida cotidiana do Recife.",
+        categoria: "comercio",
+        categoriaNome: "Comércio tradicional",
+        descricao:
+            "Mercado tradicional ligado ao comércio e à vida cotidiana do Recife.",
+        periodo: "História do comércio recifense",
+        endereco: "Bairro de São José, Recife - PE",
         latitude: -8.0687,
-        longitude: -34.8780
+        longitude: -34.8780,
+        fonte: "Consultar fontes oficiais municipais e patrimoniais."
     }
 ];
 
-// Criar o mapa centrado no Recife Antigo.
-const mapa = L.map("mapa").setView([-8.0618, -34.8720], 15);
+// ========================================
+// 2. CONFIGURAÇÃO DO MAPA
+// ========================================
 
-// Adicionar o mapa-base do OpenStreetMap.
+const centroRecife = [-8.0618, -34.8720];
+const zoomInicial = 14;
+
+const mapa = L.map("mapa").setView(
+    centroRecife,
+    zoomInicial
+);
+
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">' +
+        'OpenStreetMap</a> contributors'
 }).addTo(mapa);
 
+// Grupo que reúne os marcadores visíveis.
 const camadaMarcadores = L.layerGroup().addTo(mapa);
+
+// ========================================
+// 3. ELEMENTOS DA PÁGINA
+// ========================================
+
 const lista = document.getElementById("lista-lugares");
 const pesquisa = document.getElementById("pesquisa");
 const contador = document.getElementById("contador");
+const categoria = document.getElementById("categoria");
+const botaoVoltar = document.getElementById("voltar-mapa");
+
+// ========================================
+// 4. FUNÇÕES AUXILIARES
+// ========================================
+
+function normalizar(texto) {
+    return String(texto)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .trim();
+}
+
+function criarElemento(tag, texto, classe = "") {
+    const elemento = document.createElement(tag);
+    elemento.textContent = texto;
+
+    if (classe) {
+        elemento.className = classe;
+    }
+
+    return elemento;
+}
+
+// ========================================
+// 5. DETALHES DE UM LUGAR
+// ========================================
+
+function criarPopup(lugar) {
+    const conteudo = document.createElement("div");
+
+    conteudo.appendChild(
+        criarElemento("strong", lugar.nome)
+    );
+
+    conteudo.appendChild(
+        criarElemento("p", lugar.categoriaNome)
+    );
+
+    conteudo.appendChild(
+        criarElemento("p", lugar.descricao)
+    );
+
+    conteudo.appendChild(
+        criarElemento("p", "Período: " + lugar.periodo)
+    );
+
+    conteudo.appendChild(
+        criarElemento("p", "Endereço: " + lugar.endereco)
+    );
+
+    conteudo.appendChild(
+        criarElemento("p", "Fonte: " + lugar.fonte, "popup-fonte")
+    );
+
+    return conteudo;
+}
 
 function abrirLugar(lugar) {
     mapa.setView(
@@ -63,37 +172,35 @@ function abrirLugar(lugar) {
         { animate: true }
     );
 
-    // Abre o resumo do lugar no mapa.
     L.popup()
         .setLatLng([lugar.latitude, lugar.longitude])
-        .setContent(`
-            <div class="popup-lugar">
-                <strong>${lugar.nome}</strong>
-                <p>${lugar.categoria}</p>
-                <p>${lugar.descricao}</p>
-            </div>
-        `)
+        .setContent(criarPopup(lugar))
         .openOn(mapa);
 }
 
-function renderizarLugares(termo = "") {
-    const busca = termo
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .trim();
+// ========================================
+// 6. FILTRAR E EXIBIR OS LUGARES
+// ========================================
+
+function renderizarLugares() {
+    const termo = normalizar(pesquisa.value);
+    const categoriaSelecionada = categoria.value;
 
     const encontrados = lugares.filter(lugar => {
-        const texto = (
+        const textoCompleto = normalizar(
             lugar.nome + " " +
-            lugar.categoria + " " +
-            lugar.descricao
-        )
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLowerCase();
+            lugar.categoriaNome + " " +
+            lugar.descricao + " " +
+            lugar.endereco
+        );
 
-        return texto.includes(busca);
+        const correspondePesquisa = textoCompleto.includes(termo);
+
+        const correspondeCategoria =
+            categoriaSelecionada === "todas" ||
+            lugar.categoria === categoriaSelecionada;
+
+        return correspondePesquisa && correspondeCategoria;
     });
 
     lista.replaceChildren();
@@ -104,41 +211,63 @@ function renderizarLugares(termo = "") {
         (encontrados.length === 1 ? " local" : " locais");
 
     encontrados.forEach(lugar => {
+        // Cartão lateral
         const botao = document.createElement("button");
         botao.type = "button";
         botao.className = "cartao-lugar";
 
-        const nome = document.createElement("strong");
-        nome.textContent = lugar.nome;
+        const nome = criarElemento("strong", lugar.nome);
 
-        const descricao = document.createElement("span");
-        descricao.textContent =
-            lugar.categoria + " — " + lugar.descricao;
+        const descricao = criarElemento(
+            "span",
+            lugar.categoriaNome + " — " + lugar.descricao
+        );
 
         botao.append(nome, descricao);
-        botao.addEventListener("click", () => abrirLugar(lugar));
+
+        botao.addEventListener("click", () => {
+            abrirLugar(lugar);
+        });
+
         lista.appendChild(botao);
 
+        // Marcador no mapa
         const marcador = L.marker([
             lugar.latitude,
             lugar.longitude
-        ]).addTo(camadaMarcadores);
+        ]);
 
-        marcador.bindPopup(`
-            <strong>${lugar.nome}</strong>
-            <p>${lugar.categoria}</p>
-            <p>${lugar.descricao}</p>
-        `);
+        marcador.bindPopup(criarPopup(lugar));
+        marcador.addTo(camadaMarcadores);
 
         marcador.on("click", () => {
-            // Mantém a seleção do lugar ligada ao marcador.
             marcador.openPopup();
         });
     });
+
+    if (encontrados.length === 0) {
+        lista.appendChild(
+            criarElemento(
+                "p",
+                "Nenhum lugar encontrado. Tente outra pesquisa ou categoria.",
+                "aviso"
+            )
+        );
+    }
 }
 
-pesquisa.addEventListener("input", evento => {
-    renderizarLugares(evento.target.value);
+// ========================================
+// 7. EVENTOS
+// ========================================
+
+pesquisa.addEventListener("input", renderizarLugares);
+
+categoria.addEventListener("change", renderizarLugares);
+
+botaoVoltar.addEventListener("click", () => {
+    mapa.closePopup();
+    mapa.setView(centroRecife, zoomInicial);
 });
 
+// Carregar a lista ao abrir o site.
 renderizarLugares();
