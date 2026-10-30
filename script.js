@@ -135,34 +135,33 @@ function criarElemento(tag, texto, classe = "") {
 // 5. DETALHES DE UM LUGAR
 // ========================================
 
+
+
 function criarPopup(lugar) {
     const conteudo = document.createElement("div");
 
-    conteudo.appendChild(
-        criarElemento("strong", lugar.nome)
-    );
+    const titulo = document.createElement("strong");
+    titulo.textContent = lugar.nome;
+    conteudo.appendChild(titulo);
 
-    conteudo.appendChild(
-        criarElemento("p", lugar.categoriaNome)
-    );
+    const categoriaTexto = document.createElement("p");
+    categoriaTexto.textContent = lugar.categoriaNome;
+    conteudo.appendChild(categoriaTexto);
 
-    conteudo.appendChild(
-        criarElemento("p", lugar.descricao)
-    );
+    const descricao = document.createElement("p");
+    descricao.textContent = lugar.descricao;
+    conteudo.appendChild(descricao);
 
-    conteudo.appendChild(
-        criarElemento("p", "Período: " + lugar.periodo)
-    );
+    const link = document.createElement("a");
+    link.href = "lugar.html?id=" + encodeURIComponent(lugar.id);
+    link.textContent = "Conhecer a história completa";
+    link.className = "link-detalhes";
 
-    conteudo.appendChild(
-        criarElemento("p", "Endereço: " + lugar.endereco)
-    );
-
-    conteudo.appendChild(
-        criarElemento("p", "Fonte: " + lugar.fonte, "popup-fonte")
-    );
+    conteudo.appendChild(link);
 
     return conteudo;
+}
+
 }
 
 function abrirLugar(lugar) {
