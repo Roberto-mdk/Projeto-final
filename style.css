@@ -1,0 +1,265 @@
+
+:root {
+    --azul: #14263d;
+    --verde: #0f766e;
+    --fundo: #f4f6f5;
+    --texto: #202d3b;
+    --texto-suave: #657386;
+    --borda: #dfe6e5;
+    --branco: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fundo);
+    color: var(--texto);
+}
+
+.topo {
+    min-height: 76px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--azul);
+    color: var(--branco);
+}
+
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.simbolo {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--verde);
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.marca strong,
+.marca small {
+    display: block;
+    letter-spacing: 2px;
+}
+
+.marca small {
+    margin-top: 4px;
+    color: #b9d7d3;
+    font-size: 10px;
+}
+
+.regiao {
+    color: #d9e4ed;
+    font-size: 13px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 370px minmax(0, 1fr);
+    min-height: calc(100vh - 126px);
+}
+
+.painel {
+    padding: 26px;
+    background: var(--branco);
+    border-right: 1px solid var(--borda);
+}
+
+.etiqueta {
+    color: var(--verde);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+h1 {
+    margin: 12px 0;
+    color: var(--azul);
+    font-size: 31px;
+    line-height: 1.15;
+}
+
+.introducao {
+    color: var(--texto-suave);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.rotulo {
+    display: block;
+    margin: 25px 0 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#pesquisa {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    font-size: 14px;
+    outline-color: var(--verde);
+}
+
+.cabecalho-lista {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 25px 0 12px;
+}
+
+.cabecalho-lista h2 {
+    margin: 0;
+    font-size: 15px;
+}
+
+#contador {
+    color: var(--texto-suave);
+    font-size: 11px;
+}
+
+.lista-lugares {
+    display: grid;
+    gap: 10px;
+}
+
+.cartao-lugar {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    background: var(--branco);
+    color: var(--texto);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.cartao-lugar:hover,
+.cartao-lugar:focus-visible {
+    border-color: var(--verde);
+    background: #f1f9f7;
+}
+
+.cartao-lugar strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.cartao-lugar span {
+    color: var(--texto-suave);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.aviso {
+    margin-top: 24px;
+    color: var(--texto-suave);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.area-mapa {
+    position: relative;
+    min-width: 0;
+    min-height: 600px;
+    padding: 14px;
+}
+
+#mapa {
+    width: 100%;
+    height: 100%;
+    min-height: 570px;
+    border-radius: 14px;
+    background: #e4ebe8;
+    z-index: 1;
+}
+
+.legenda {
+    position: absolute;
+    top: 26px;
+    left: 28px;
+    z-index: 500;
+    padding: 10px 13px;
+    border-radius: 9px;
+    background: var(--branco);
+    box-shadow: 0 2px 10px #14263d20;
+    font-size: 12px;
+}
+
+.ponto-legenda {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: var(--verde);
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 28px;
+    background: var(--azul);
+    color: #d9e4ed;
+    font-size: 11px;
+}
+
+@media (max-width: 850px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .painel {
+        padding: 22px;
+        border-right: 0;
+    }
+
+    .area-mapa {
+        min-height: 450px;
+    }
+
+    #mapa {
+        min-height: 430px;
+    }
+
+    .legenda {
+        top: 25px;
+        left: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .topo {
+        padding: 14px 18px;
+    }
+
+    .regiao {
+        font-size: 11px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    footer {
+        padding: 15px 18px;
+        flex-wrap: wrap;
+    }
+}

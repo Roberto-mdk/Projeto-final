@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore a memória histórica e cultural do Recife com o NEXUS MEMÓRIA.">
+
+    <title>NEXUS MEMÓRIA | Recife histórico</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topo">
+        <a class="marca" href="#" aria-label="Nexus Memória, início">
+            <span class="simbolo">N</span>
+            <span>
+                <strong>NEXUS</strong>
+                <small>MEMÓRIA</small>
+            </span>
+        </a>
+
+        <span class="regiao">Recife, Pernambuco</span>
+    </header>
+
+    <main class="layout">
+        <aside class="painel">
+            <p class="etiqueta">MAPA HISTÓRICO INTERATIVO</p>
+            <h1>Descubra as histórias do Recife.</h1>
+            <p class="introducao">
+                Explore lugares, conheça o passado e descubra as memórias
+                que fazem parte da cidade.
+            </p>
+
+            <label for="pesquisa" class="rotulo">Pesquisar lugares</label>
+            <input
+                type="search"
+                id="pesquisa"
+                placeholder="Ex.: Marco Zero"
+                autocomplete="off"
+            >
+
+            <div class="cabecalho-lista">
+                <h2>Lugares históricos</h2>
+                <span id="contador">0 locais</span>
+            </div>
+
+            <div id="lista-lugares" class="lista-lugares"></div>
+
+            <p class="aviso">
+                Conteúdo demonstrativo. As informações históricas e
+                coordenadas devem ser conferidas antes da publicação.
+            </p>
+        </aside>
+
+        <section class="area-mapa" aria-label="Mapa histórico do Recife">
+            <div class="legenda">
+                <span class="ponto-legenda"></span>
+                Locais de memória
+            </div>
+            <div id="mapa"></div>
+        </section>
+    </main>
+
+    <footer>
+        <span>NEXUS MEMÓRIA</span>
+        <span>Memória, território e cultura.</span>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
