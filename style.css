@@ -323,5 +323,19 @@ footer {
     color: var(--texto-suave);
     font-size: 11px;
 }
+    
+.link-detalhes {
+    display: inline-block;
+    margin-top: 6px;
+    color: var(--verde);
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.link-detalhes:hover {
+    text-decoration: underline;
+}
+
 
 }
