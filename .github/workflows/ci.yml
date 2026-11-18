@@ -1,0 +1,45 @@
+name: NEXUS - validação e build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nexus-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v6
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          # Lockfile cache can be enabled after committing package-lock.json
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Verificar sintaxe JavaScript
+        run: npm run check
+
+      - name: Gerar versão de produção
+        run: npm run build
+
+      - name: Armazenar build para consulta
+        uses: actions/upload-artifact@v6
+        with:
+          name: nexus-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
