@@ -37,7 +37,7 @@ jobs:
         run: npm run build
 
       - name: Armazenar build para consulta
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: nexus-dist
           path: dist/
