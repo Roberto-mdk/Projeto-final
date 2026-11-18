@@ -218,4 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dependências e arquivos gerados
 node_modules/
+dist/
+
+# Arquivos de ambiente
+.env
+.env.*
+!.env.example

@@ -1,0 +1,27 @@
+{
+  "name": "projeto-final",
+  "version": "1.0.0",
+  "description": "Esta atualização organiza a interface do NEXUS como um painel de gestão de construções civis e geolocalização, preservando a instância do mapa 3D já existente no projeto.",
+  "main": "vite.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Roberto-mdk/Projeto-final.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Roberto-mdk/Projeto-final/issues"
+  },
+  "homepage": "https://github.com/Roberto-mdk/Projeto-final#readme",
+  "devDependencies": {
+    "vite": "^8.3.8"
+  }
+}

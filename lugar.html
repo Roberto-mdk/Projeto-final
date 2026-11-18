@@ -1,1441 +1,476 @@
-<<<<<<< HEAD
-
-<div class="filtros">
-    <label for="categoria">Filtrar por categoria</label>
-
-    <select id="categoria">
-        <option value="todas">Todas as categorias</option>
-        <option value="cultura">Cultura</option>
-        <option value="rua">Ruas e praças</option>
-        <option value="patrimonio">Patrimônio histórico</option>
-        <option value="comercio">Comércio tradicional</option>
-    </select>
-</div>
-
-<div class="cabecalho-lista">
-    <h2>Lugares históricos</h2>
-    <span id="contador">0 locais</span>
-</div>
-
-<div id="lista-lugares" class="lista-lugares"></div>
-
-<button id="voltar-mapa" type="button" class="botao-voltar">
-    Ver toda a região
-</button>
-<!-- #region -->
-=======
-
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-BR" data-theme="dia">
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="theme-color" content="#071923">
+    <title>NEXUS | Detalhes da obra</title>
 
-    <title>Detalhes da construção | NEXUS</title>
-
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="./style.css">
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
+        href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css"
     >
-
-
-    <link rel="stylesheet" href="style.css">
-
-
-    <style>
-
-        .detail-page {
-            min-height: 100vh;
-            padding: 25px;
-        }
-
-        .detail-top {
-            width: min(1150px, 100%);
-            margin: 0 auto 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .detail-top .brand {
-            padding: 0;
-            min-height: 0;
-            border: 0;
-            background: transparent;
-        }
-
-        .detail-top .brand strong {
-            font-size: 17px;
-        }
-
-        .detail-container {
-            max-width: 1150px;
-            margin: 0 auto;
-        }
-
-        .detail-header {
-            position: relative;
-            overflow: hidden;
-            padding: 28px;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            background:
-                linear-gradient(
-                    115deg,
-                    #163b46,
-                    #102b37
-                );
-            box-shadow: var(--shadow-md);
-        }
-
-        .detail-header::after {
-            content: "";
-            position: absolute;
-            width: 270px;
-            height: 270px;
-            top: -140px;
-            right: -80px;
-            border-radius: 50%;
-            background: rgba(33,185,154,.1);
-            pointer-events: none;
-        }
-
-        .detail-header h1 {
-            position: relative;
-            z-index: 1;
-            margin: 10px 0;
-            color: #f1faf7;
-            font: 800 clamp(24px,4vw,35px) "Manrope",sans-serif;
-            letter-spacing: -.8px;
-        }
-
-        .detail-header p {
-            position: relative;
-            z-index: 1;
-            color: #b3c8c5;
-            font-size: 11px;
-            line-height: 1.7;
-        }
-
-        .detail-header .header-meta {
-            margin-top: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-
-        .detail-code {
-            color: #93b6b2;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .detail-status {
-            display: inline-flex;
-            padding: 6px 10px;
-            border-radius: 30px;
-            font-size: 9px;
-            font-weight: 800;
-        }
-
-        .detail-status.andamento {
-            color: #72e5c2;
-            background: rgba(33,185,154,.15);
-        }
-
-        .detail-status.planejamento {
-            color: #80c6e8;
-            background: rgba(80,169,211,.15);
-        }
-
-        .detail-status.concluida {
-            color: #a6e0a1;
-            background: rgba(121,182,107,.15);
-        }
-
-        .detail-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .detail-actions a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 36px;
-            padding: 0 13px;
-            border: 1px solid rgba(255,255,255,.15);
-            border-radius: 8px;
-            background: rgba(255,255,255,.06);
-            color: white;
-            font-size: 9px;
-            font-weight: 800;
-        }
-
-        .detail-actions a.primary {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: #062b29;
-        }
-
-        .detail-summary {
-            display: grid;
-            grid-template-columns: repeat(4,minmax(0,1fr));
-            gap: 11px;
-            margin-top: 13px;
-        }
-
-        .detail-summary-card {
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: var(--panel);
-        }
-
-        .detail-summary-card small {
-            display: block;
-            color: var(--muted);
-            font-size: 9px;
-        }
-
-        .detail-summary-card strong {
-            display: block;
-            margin-top: 7px;
-            color: var(--text);
-            font: 800 20px "Manrope",sans-serif;
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: minmax(0,1.1fr) minmax(280px,.9fr);
-            gap: 13px;
-            margin-top: 13px;
-        }
-
-        .detail-card {
-            min-width: 0;
-            padding: 21px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: var(--panel);
-        }
-
-        .detail-card h2 {
-            margin: 0 0 15px;
-            color: var(--text);
-            font: 750 14px "Manrope",sans-serif;
-        }
-
-        .detail-card > p {
-            color: var(--text-soft);
-            font-size: 11px;
-            line-height: 1.8;
-        }
-
-        .detail-data-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .detail-data-item small {
-            display: block;
-            color: var(--muted);
-            font-size: 8px;
-            font-weight: 700;
-            letter-spacing: .7px;
-            text-transform: uppercase;
-        }
-
-        .detail-data-item strong {
-            display: block;
-            margin-top: 5px;
-            color: var(--text);
-            font-size: 10px;
-            overflow-wrap: anywhere;
-        }
-
-        .detail-progress-info {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .detail-progress-info span {
-            color: var(--text-soft);
-            font-size: 10px;
-        }
-
-        .detail-progress-info strong {
-            color: var(--primary-light);
-            font: 800 23px "Manrope",sans-serif;
-        }
-
-        .detail-progress-track {
-            height: 9px;
-            margin: 11px 0;
-            overflow: hidden;
-            border-radius: 20px;
-            background: rgba(255,255,255,.1);
-        }
-
-        .detail-progress-track span {
-            display: block;
-            height: 100%;
-            border-radius: inherit;
-            background: linear-gradient(
-                90deg,
-                #087d70,
-                #65e0bd
-            );
-        }
-
-        .detail-grid .full-width {
-            grid-column: 1 / -1;
-        }
-
-        .detail-gallery {
-            display: grid;
-            grid-template-columns: repeat(3,minmax(0,1fr));
-            gap: 10px;
-        }
-
-        .detail-photo {
-            position: relative;
-            aspect-ratio: 4/3;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            border-radius: 9px;
-            background: var(--panel-light);
-        }
-
-        .detail-photo img {
-            width: 100%;
-            height: 100%;
-            display: block;
-            object-fit: cover;
-            transition: transform .2s;
-        }
-
-        .detail-photo:hover img {
-            transform: scale(1.04);
-        }
-
-        .detail-photo button {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 25px;
-            height: 25px;
-            border: 0;
-            border-radius: 7px;
-            background: rgba(5,20,27,.86);
-            color: white;
-            font-size: 17px;
-        }
-
-        .empty-gallery {
-            min-height: 115px;
-            grid-column: 1 / -1;
-            display: grid;
-            place-items: center;
-            padding: 15px;
-            border: 1px dashed var(--border-strong);
-            border-radius: 10px;
-            color: var(--muted);
-            font-size: 10px;
-            text-align: center;
-        }
-
-        .detail-timeline {
-            position: relative;
-            padding-left: 21px;
-        }
-
-        .detail-timeline::before {
-            content: "";
-            position: absolute;
-            top: 5px;
-            bottom: 5px;
-            left: 6px;
-            width: 2px;
-            background: rgba(101,224,189,.22);
-        }
-
-        .detail-timeline-item {
-            position: relative;
-            padding: 0 0 21px 10px;
-        }
-
-        .detail-timeline-item:last-child {
-            padding-bottom: 0;
-        }
-
-        .detail-timeline-item::before {
-            content: "";
-            position: absolute;
-            top: 4px;
-            left: -19px;
-            width: 10px;
-            height: 10px;
-            border: 2px solid var(--primary-light);
-            border-radius: 50%;
-            background: var(--panel);
-        }
-
-        .detail-timeline-item.done::before {
-            background: var(--success);
-        }
-
-        .detail-timeline-item.current::before {
-            background: var(--primary-light);
-            box-shadow: 0 0 0 4px rgba(101,224,189,.12);
-        }
-
-        .detail-timeline-item strong {
-            display: block;
-            color: var(--text);
-            font-size: 11px;
-        }
-
-        .detail-timeline-item small {
-            display: block;
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 9px;
-        }
-
-        .detail-timeline-item p {
-            margin-top: 6px;
-            color: var(--text-soft);
-            font-size: 10px;
-        }
-
-        .detail-note {
-            margin-top: 13px;
-            padding: 12px;
-            border: 1px solid rgba(101,224,189,.15);
-            border-radius: 9px;
-            color: var(--muted);
-            background: rgba(101,224,189,.04);
-            font-size: 9px;
-            line-height: 1.6;
-        }
-
-        @media (max-width: 760px) {
-            .detail-page {
-                padding: 15px;
-            }
-
-            .detail-summary {
-                grid-template-columns: repeat(2,minmax(0,1fr));
-            }
-
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .detail-grid .full-width {
-                grid-column: auto;
-            }
-
-            .detail-gallery {
-                grid-template-columns: repeat(2,minmax(0,1fr));
-            }
-        }
-
-        @media (max-width: 430px) {
-            .detail-top {
-                align-items: flex-start;
-            }
-
-            .detail-top .brand {
-                padding: 0;
-            }
-
-            .detail-actions {
-                width: 100%;
-            }
-
-            .detail-actions a {
-                flex: 1;
-            }
-
-            .detail-data-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-    </style>
-
 </head>
 
+<body class="details-page">
 
-<body>
-
-
-<main class="detail-page">
-
-
-    <header class="detail-top">
-
-
-        <a class="brand" href="index.html">
-
-            <span class="brand-mark">N</span>
-
-            <span class="brand-text">
-
+    <header class="details-page-header">
+        <a href="./index.html" class="nexus-logo">
+            <span class="logo-symbol">N</span>
+            <span>
                 <strong>NEXUS</strong>
-
                 <small>URBAN INTELLIGENCE</small>
-
             </span>
-
         </a>
 
-
-        <a
-            class="btn btn-secondary"
-            href="index.html#projectsSection"
-        >
-            ← Voltar à plataforma
+        <a href="./index.html" class="return-link">
+            ← Voltar ao painel
         </a>
-
-
     </header>
 
+    <main class="details-page-main">
 
-
-    <div class="detail-container">
-
-
-        <div id="content">
-
-            <div class="detail-card">
-                Carregando informações da construção...
-            </div>
-
+        <div id="pageLoading" class="page-loading">
+            <div class="loading-circle"></div>
+            <p>Carregando informações da obra...</p>
         </div>
 
+        <div id="pageError" class="page-error" hidden>
+            <h2>Obra não encontrada</h2>
+            <p>Não foi possível localizar os dados desta construção.</p>
+            <a href="./index.html" class="btn-primary">
+                Voltar ao painel
+            </a>
+        </div>
 
-    </div>
+        <section id="obraPage" hidden>
 
+            <div class="details-page-title">
+                <div>
+                    <span class="eyebrow">MONITORAMENTO DE CONSTRUÇÃO</span>
+                    <h1 id="obraTitulo">Obra</h1>
+                    <p id="obraEndereco"></p>
+                </div>
 
-</main>
+                <div id="obraStatus" class="obra-status"></div>
+            </div>
 
+            <div class="details-page-grid">
 
+                <section class="details-main-card">
 
-<!-- DADOS E ARMAZENAMENTO -->
+                    <div class="details-main-heading">
+                        <div>
+                            <span class="eyebrow">STATUS DO PROJETO</span>
+                            <h2>Progresso da construção</h2>
+                        </div>
 
-<script src="dados/config.js"></script>
+                        <strong id="obraProgresso">0%</strong>
+                    </div>
 
-<script src="dados/obras.js"></script>
+                    <div class="obra-progress-track large-track">
+                        <div id="obraBarra" class="obra-progress-fill"></div>
+                    </div>
 
-<script src="js/armazenamento.js"></script>
+                    <div class="details-page-stats">
+                        <div>
+                            <small>Categoria</small>
+                            <strong id="obraCategoria"></strong>
+                        </div>
 
+                        <div>
+                            <small>Responsável</small>
+                            <strong id="obraResponsavel"></strong>
+                        </div>
 
+                        <div>
+                            <small>Orçamento</small>
+                            <strong id="obraOrcamento"></strong>
+                        </div>
 
-<script>
+                        <div>
+                            <small>Identificação</small>
+                            <strong id="obraIdentificacao"></strong>
+                        </div>
+                    </div>
 
-(() => {
+                    <div class="details-description">
+                        <h3>Descrição do projeto</h3>
+                        <p id="obraDescricao"></p>
+                    </div>
 
-    "use strict";
+                    <div class="details-date-grid">
+                        <div class="date-card">
+                            <span>▣</span>
+                            <div>
+                                <small>Data de início</small>
+                                <strong id="obraDataInicio"></strong>
+                            </div>
+                        </div>
 
+                        <div class="date-card">
+                            <span>▣</span>
+                            <div>
+                                <small>Previsão de conclusão</small>
+                                <strong id="obraDataFim"></strong>
+                            </div>
+                        </div>
+                    </div>
 
-    const id =
-        new URLSearchParams(
-            location.search
-        ).get("id");
+                </section>
 
+                <section class="details-photo-card">
 
-    const root =
-        document.getElementById("content");
+                    <div class="details-photo-heading">
+                        <span class="eyebrow">REGISTRO VISUAL</span>
+                        <h2>Registro da construção</h2>
+                    </div>
 
+                    <div id="obraImagem" class="details-photo-area">
+                        <div class="photo-placeholder">
+                            <span>▧</span>
+                            <p>Imagem não cadastrada</p>
+                        </div>
+                    </div>
 
-    const objectURLs = [];
+                    <div class="details-photo-caption">
+                        <span>Registro do empreendimento</span>
+                        <span>NEXUS</span>
+                    </div>
 
+                </section>
 
-    function safe(value) {
+            </div>
 
-        return String(value ?? "").replace(
-            /[&<>"']/g,
-            char => ({
+            <section class="details-map-section">
 
+                <div class="details-map-heading">
+                    <div>
+                        <span class="eyebrow">GEORREFERENCIAMENTO</span>
+                        <h2>Localização da obra</h2>
+                        <p id="obraCoordenadas"></p>
+                    </div>
+                </div>
+
+                <div id="mapDetalhes"></div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer class="nexus-footer">
+        <span>NEXUS Urban Intelligence 2.0</span>
+        <span>Recife, Pernambuco</span>
+    </footer>
+
+    <script type="module">
+        import maplibregl from
+            "https://esm.sh/maplibre-gl@5.6.2";
+
+        const CHAVE_OBRAS = "nexus_obras_v2";
+
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        const obrasDemo = [
+            {
+                id: "obra-001",
+                nome: "Projeto de Requalificação Urbana",
+                categoria: "Urbanismo",
+                etapa: "Execução",
+                endereco: "Bairro do Recife, Recife - PE",
+                latitude: -8.0631,
+                longitude: -34.8711,
+                responsavel: "Equipe NEXUS",
+                descricao: "Projeto demonstrativo de requalificação urbana.",
+                progresso: 65,
+                orcamento: 850000,
+                dataInicio: "2026-01-15",
+                dataFim: "2026-12-30",
+                imagem: ""
+            },
+            {
+                id: "obra-002",
+                nome: "Centro de Mobilidade Urbana",
+                categoria: "Infraestrutura",
+                etapa: "Planejamento",
+                endereco: "Santo Antônio, Recife - PE",
+                latitude: -8.0638,
+                longitude: -34.8785,
+                responsavel: "Departamento de Mobilidade",
+                descricao: "Projeto de modernização da mobilidade urbana.",
+                progresso: 20,
+                orcamento: 1200000,
+                dataInicio: "2026-05-01",
+                dataFim: "2027-03-30",
+                imagem: ""
+            },
+            {
+                id: "obra-003",
+                nome: "Modernização de Espaço Público",
+                categoria: "Reforma",
+                etapa: "Execução",
+                endereco: "Boa Vista, Recife - PE",
+                latitude: -8.0578,
+                longitude: -34.8856,
+                responsavel: "Equipe de Infraestrutura",
+                descricao: "Reforma e revitalização de espaço público.",
+                progresso: 48,
+                orcamento: 450000,
+                dataInicio: "2026-03-10",
+                dataFim: "2026-11-30",
+                imagem: ""
+            },
+            {
+                id: "obra-004",
+                nome: "Residencial Horizonte",
+                categoria: "Residencial",
+                etapa: "Projeto",
+                endereco: "Graças, Recife - PE",
+                latitude: -8.0458,
+                longitude: -34.8994,
+                responsavel: "Construtora Horizonte",
+                descricao: "Projeto residencial demonstrativo.",
+                progresso: 5,
+                orcamento: 2300000,
+                dataInicio: "2026-10-01",
+                dataFim: "2027-12-20",
+                imagem: ""
+            },
+            {
+                id: "obra-005",
+                nome: "Edifício Empresarial Nexus",
+                categoria: "Comercial",
+                etapa: "Finalizada",
+                endereco: "Boa Viagem, Recife - PE",
+                latitude: -8.1184,
+                longitude: -34.8950,
+                responsavel: "Equipe Comercial",
+                descricao: "Construção demonstrativa concluída.",
+                progresso: 100,
+                orcamento: 1800000,
+                dataInicio: "2025-01-01",
+                dataFim: "2026-09-30",
+                imagem: ""
+            }
+        ];
+
+        function escapar(valor) {
+            return String(valor ?? "").replace(/[&<>"']/g, c => ({
                 "&": "&amp;",
                 "<": "&lt;",
                 ">": "&gt;",
                 '"': "&quot;",
                 "'": "&#39;"
-
-            })[char]
-        );
-
-    }
-
-
-    function dateFormat(value) {
-
-        if (!value) return "Não informado";
-
-
-        const date =
-            new Date(`${value}T12:00:00`);
-
-
-        if (Number.isNaN(date.getTime())) {
-            return "Data inválida";
+            })[c]);
         }
 
-
-        return new Intl.DateTimeFormat(
-            "pt-BR"
-        ).format(date);
-
-    }
-
-
-    function stateClass(status) {
-
-        if (status === "Concluída") {
-            return "concluida";
+        function formatarMoeda(valor) {
+            return Number(valor || 0).toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            });
         }
 
-        if (status === "Em andamento") {
-            return "andamento";
+        function formatarData(valor) {
+            if (!valor) return "Não informada";
+
+            const partes = valor.split("-");
+
+            if (partes.length !== 3) return valor;
+
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
         }
 
-        return "planejamento";
+        function classeEtapa(etapa) {
+            const texto = String(etapa || "").toLowerCase();
 
-    }
+            if (texto.includes("conclu")) return "status-concluida";
+            if (texto.includes("execu")) return "status-execucao";
+            if (texto.includes("planej")) return "status-planejamento";
 
-
-    function renderTimeline(work) {
-
-        const schedule =
-            Array.isArray(work.cronograma)
-                ? work.cronograma
-                : [];
-
-
-        if (!schedule.length) {
-
-            return `
-
-                <div class="empty-gallery">
-
-                    Nenhum cronograma cadastrado.
-
-                </div>
-
-            `;
-
+            return "status-projeto";
         }
 
+        function carregarObras() {
+            try {
+                const salvas = JSON.parse(
+                    localStorage.getItem(CHAVE_OBRAS) || "null"
+                );
 
-        return schedule.map(item => {
+                if (Array.isArray(salvas)) {
+                    return salvas;
+                }
+            } catch (_) {}
 
-            const status =
-                item.status || "Pendente";
-
-
-            const className =
-
-                status === "Concluída"
-                    ? "done"
-
-                    : status === "Em andamento"
-                        ? "current"
-                        : "";
-
-
-            return `
-
-                <div class="detail-timeline-item ${className}">
-
-
-                    <strong>
-
-                        ${safe(item.titulo)}
-
-                    </strong>
-
-
-                    <small>
-
-                        PREVISÃO: ${dateFormat(item.data)}
-
-                    </small>
-
-
-                    <p>
-
-                        ${safe(item.descricao)}
-
-                    </p>
-
-
-                    <span class="work-status ${stateClass(status)}">
-
-                        ${safe(status)}
-
-                    </span>
-
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    }
-
-
-    function renderGallery(photos) {
-
-        if (!photos.length) {
-
-            return `
-
-                <div class="empty-gallery">
-
-                    Nenhuma fotografia foi adicionada a esta construção.
-
-                    <br>
-
-                    Utilize o formulário de edição na plataforma para adicionar imagens.
-
-                </div>
-
-            `;
-
+            return obrasDemo;
         }
 
-
-        return photos.map(photo => {
-
-            const url =
-                URL.createObjectURL(photo.blob);
-
-
-            objectURLs.push(url);
-
-
-            return `
-
-                <div class="detail-photo">
-
-
-                    <a
-
-                        href="${url}"
-
-                        target="_blank"
-
-                        rel="noopener"
-
-                        title="Visualizar fotografia"
-
-                    >
-
-                        <img
-
-                            src="${url}"
-
-                            alt="${safe(photo.name)}"
-
-                            loading="lazy"
-
-                        >
-
-                    </a>
-
-
-                    <button
-
-                        type="button"
-
-                        data-delete-photo="${safe(photo.id)}"
-
-                        title="Excluir fotografia"
-
-                        aria-label="Excluir fotografia"
-
-                    >
-
-                        ×
-
-                    </button>
-
-
-                </div>
-
-            `;
-
-        }).join("");
-
-    }
-
-
-    async function render() {
-
-        const work =
-            window.NEXUS_STORAGE.getObra(id);
-
-
-        if (!work) {
-
-            root.innerHTML = `
-
-                <div class="detail-card">
-
-                    <h2>Construção não encontrada</h2>
-
-                    <p>
-                        O registro não existe ou foi removido.
-                    </p>
-
-                    <a href="index.html">
-                        Voltar à plataforma
-                    </a>
-
-                </div>
-
-            `;
-
-            return;
-
+        function mostrarErro() {
+            document.getElementById("pageLoading").hidden = true;
+            document.getElementById("pageError").hidden = false;
         }
 
+        function renderizarObra(obra) {
+            document.getElementById("pageLoading").hidden = true;
+            document.getElementById("obraPage").hidden = false;
 
-        let photos = [];
+            document.title = `NEXUS | ${obra.nome}`;
 
+            document.getElementById("obraTitulo").textContent = obra.nome;
+            document.getElementById("obraEndereco").textContent = obra.endereco;
 
-        try {
+            const status = document.getElementById("obraStatus");
+            status.textContent = obra.etapa;
+            status.className = `obra-status ${classeEtapa(obra.etapa)}`;
 
-            photos =
-                await window.NEXUS_STORAGE.getFotos(work.id);
-
-        } catch (error) {
-
-            console.warn(
-                "[NEXUS DETAIL] Não foi possível consultar a galeria:",
-                error
+            const progresso = Math.max(
+                0,
+                Math.min(100, Number(obra.progresso || 0))
             );
 
+            document.getElementById("obraProgresso").textContent = `${progresso}%`;
+
+            document.getElementById("obraBarra").style.width = `${progresso}%`;
+
+            document.getElementById("obraCategoria").textContent =
+                obra.categoria || "Não informada";
+
+            document.getElementById("obraResponsavel").textContent =
+                obra.responsavel || "Não informado";
+
+            document.getElementById("obraOrcamento").textContent =
+                formatarMoeda(obra.orcamento);
+
+            document.getElementById("obraIdentificacao").textContent = obra.id;
+
+            document.getElementById("obraDescricao").textContent =
+                obra.descricao || "Descrição não cadastrada.";
+
+            document.getElementById("obraDataInicio").textContent =
+                formatarData(obra.dataInicio);
+
+            document.getElementById("obraDataFim").textContent =
+                formatarData(obra.dataFim);
+
+            document.getElementById("obraCoordenadas").textContent =
+                `${Number(obra.latitude).toFixed(6)}, ${Number(obra.longitude).toFixed(6)}`;
+
+            if (obra.imagem) {
+                const img = document.createElement("img");
+
+                img.src = obra.imagem;
+                img.alt = `Registro visual de ${obra.nome}`;
+
+                img.onerror = () => {
+                    document.getElementById("obraImagem").innerHTML = `
+                        <div class="photo-placeholder">
+                            <span>▧</span>
+                            <p>Não foi possível carregar a imagem</p>
+                        </div>
+                    `;
+                };
+
+                document.getElementById("obraImagem").replaceChildren(img);
+            }
+
+            iniciarMapa(obra);
         }
 
-
-        const progress = Math.max(
-
-            0,
-
-            Math.min(
-                100,
-                Number(work.progresso) || 0
-            )
-
-        );
-
-
-        const status =
-            work.etapa || "Planejamento";
-
-
-        const category =
-            work.categoria || "Não informada";
-
-
-        const responsible =
-            work.responsavel || "Não informado";
-
-
-        root.innerHTML = `
-
-
-            <!-- CABEÇALHO -->
-
-
-            <section class="detail-header">
-
-
-                <div class="section-label">
-                    FICHA TÉCNICA DO EMPREENDIMENTO
-                </div>
-
-
-                <h1>
-                    ${safe(work.nome)}
-                </h1>
-
-
-                <p>
-
-                    ${safe(work.endereco || work.bairro)}
-
-                    ·
-
-                    ${safe(category)}
-
-                </p>
-
-
-
-                <div class="header-meta">
-
-
-                    <div>
-
-                        <span class="detail-status ${stateClass(status)}">
-
-                            ${safe(status)}
-
-                        </span>
-
-
-                        <div class="detail-code" style="margin-top:9px">
-
-                            IDENTIFICAÇÃO:
-
-                            ${safe(work.codigo || work.id)}
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="detail-actions">
-
-
-                        <a
-
-                            class="primary"
-
-                            href="index.html?obra=${encodeURIComponent(work.id)}"
-
-                        >
-
-                            Localizar no mapa 3D
-
-                        </a>
-
-
-
-                        <a href="index.html#projectsSection">
-
-                            Voltar ao portfólio
-
-                        </a>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- RESUMO -->
-
-
-            <section class="detail-summary">
-
-
-                <div class="detail-summary-card">
-
-                    <small>Categoria</small>
-
-                    <strong>
-                        ${safe(category)}
-                    </strong>
-
-                </div>
-
-
-                <div class="detail-summary-card">
-
-                    <small>Progresso</small>
-
-                    <strong>
-                        ${progress}%
-                    </strong>
-
-                </div>
-
-
-                <div class="detail-summary-card">
-
-                    <small>Fotografias</small>
-
-                    <strong>
-                        ${photos.length}
-                    </strong>
-
-                </div>
-
-
-                <div class="detail-summary-card">
-
-                    <small>Bairro</small>
-
-                    <strong style="font-size:14px">
-
-                        ${safe(work.bairro)}
-
-                    </strong>
-
-                </div>
-
-
-            </section>
-
-
-
-            <!-- CONTEÚDO -->
-
-
-            <section class="detail-grid">
-
-
-                <!-- INFORMAÇÕES -->
-
-
-                <article class="detail-card">
-
-
-                    <h2>
-                        Informações da construção
-                    </h2>
-
-
-                    <p>
-
-                        ${safe(
-                            work.descricao ||
-                            "Nenhuma descrição cadastrada."
-                        )}
-
-                    </p>
-
-
-
-                    <div class="detail-data-grid">
-
-
-                        <div class="detail-data-item">
-
-                            <small>Responsável</small>
-
-                            <strong>
-                                ${safe(responsible)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Identificador</small>
-
-                            <strong>
-                                ${safe(work.id)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Endereço</small>
-
-                            <strong>
-                                ${safe(work.endereco)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Localidade</small>
-
-                            <strong>
-                                ${safe(work.bairro)}
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-
-                </article>
-
-
-
-                <!-- PROGRESSO -->
-
-
-                <article class="detail-card">
-
-
-                    <h2>
-                        Acompanhamento do projeto
-                    </h2>
-
-
-
-                    <div class="detail-progress-info">
-
-
-                        <span>
-
-                            Percentual registrado
-
-                        </span>
-
-
-                        <strong>
-
-                            ${progress}%
-
-                        </strong>
-
-
-                    </div>
-
-
-
-                    <div class="detail-progress-track">
-
-                        <span style="width:${progress}%"></span>
-
-                    </div>
-
-
-
-                    <div class="detail-data-grid">
-
-
-                        <div class="detail-data-item">
-
-                            <small>Início</small>
-
-                            <strong>
-                                ${dateFormat(work.dataInicio)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Execução</small>
-
-                            <strong>
-                                ${dateFormat(work.dataExecucao)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Entrega prevista</small>
-
-                            <strong>
-                                ${dateFormat(work.dataEntrega)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Última atualização</small>
-
-                            <strong>
-                                ${work.atualizadoEm
-                                    ? dateFormat(work.atualizadoEm.slice(0,10))
-                                    : "Sem registro"
-                                }
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-
-                </article>
-
-
-
-                <!-- GALERIA -->
-
-
-                <article class="detail-card full-width">
-
-
-                    <h2>
-                        Galeria de fotografias
-                    </h2>
-
-
-                    <div class="detail-gallery">
-
-                        ${renderGallery(photos)}
-
-                    </div>
-
-
-                </article>
-
-
-
-                <!-- CRONOGRAMA -->
-
-
-                <article class="detail-card">
-
-
-                    <h2>
-                        Cronograma da construção
-                    </h2>
-
-
-                    <div class="detail-timeline">
-
-                        ${renderTimeline(work)}
-
-                    </div>
-
-
-                </article>
-
-
-
-                <!-- LOCALIZAÇÃO -->
-
-
-                <article class="detail-card">
-
-
-                    <h2>
-                        Localização geográfica
-                    </h2>
-
-
-                    <div class="detail-data-grid">
-
-
-                        <div class="detail-data-item">
-
-                            <small>Latitude</small>
-
-                            <strong>
-                                ${Number(work.latitude).toFixed(6)}
-                            </strong>
-
-                        </div>
-
-
-                        <div class="detail-data-item">
-
-                            <small>Longitude</small>
-
-                            <strong>
-                                ${Number(work.longitude).toFixed(6)}
-                            </strong>
-
-                        </div>
-
-
-                    </div>
-
-
-
-                    <p style="margin-top:19px">
-
-                        A localização está associada ao marcador
-                        desta construção na plataforma NEXUS.
-
-                    </p>
-
-
-                    <div class="detail-actions" style="margin-top:16px">
-
-
-                        <a
-
-                            class="primary"
-
-                            href="index.html?obra=${encodeURIComponent(work.id)}"
-
-                        >
-
-                            Abrir localização 3D
-
-                        </a>
-
-
-                        <a
-
-                            href="https://www.openstreetmap.org/?mlat=${work.latitude}&mlon=${work.longitude}#map=17/${work.latitude}/${work.longitude}"
-
-                            target="_blank"
-
-                            rel="noopener"
-
-                        >
-
-                            Abrir OpenStreetMap
-
-                        </a>
-
-
-                    </div>
-
-
-                </article>
-
-
-            </section>
-
-
-
-            <div class="detail-note">
-
-                Os registros, fotografias, percentuais e cronogramas
-                desta demonstração são dados acadêmicos fictícios.
-                Não representam informações oficiais de empreendimentos.
-
-            </div>
-
-
-        `;
-
-
-        document.title =
-            `${work.nome} | NEXUS`;
-
-
-        // Remover fotografias da galeria.
-        root.querySelectorAll(
-            "[data-delete-photo]"
-        ).forEach(button => {
-
-            button.addEventListener("click", async () => {
-
-                const confirmed =
-                    confirm(
-                        "Deseja excluir esta fotografia?"
-                    );
-
-
-                if (!confirmed) return;
-
-
-                try {
-
-                    await window.NEXUS_STORAGE.deleteFoto(
-                        button.dataset.deletePhoto
-                    );
-
-
-                    objectURLs.forEach(url => {
-                        URL.revokeObjectURL(url);
-                    });
-
-
-                    objectURLs.length = 0;
-
-
-                    await render();
-
-
-                } catch (error) {
-
-                    console.error(error);
-
-                    alert(
-                        "Não foi possível remover a fotografia."
-                    );
-
-                }
-
+        function iniciarMapa(obra) {
+            const mapa = new maplibregl.Map({
+                container: "mapDetalhes",
+                style: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+                center: [Number(obra.longitude), Number(obra.latitude)],
+                zoom: 16.5,
+                pitch: 60,
+                bearing: -20,
+                maxPitch: 85,
+                antialias: true
             });
 
-        });
+            mapa.addControl(
+                new maplibregl.NavigationControl(),
+                "top-right"
+            );
 
-    }
+            mapa.addControl(
+                new maplibregl.ScaleControl({
+                    unit: "metric"
+                }),
+                "bottom-left"
+            );
 
+            mapa.on("load", () => {
+                const layers = mapa.getStyle().layers || [];
 
-    window.addEventListener("beforeunload", () => {
+                const edif = layers.find(layer =>
+                    layer.type === "fill" &&
+                    layer.id.toLowerCase().includes("building")
+                );
 
-        objectURLs.forEach(url => {
+                if (edif) {
+                    try {
+                        mapa.addLayer({
+                            id: "obra-page-buildings",
+                            source: edif.source,
+                            "source-layer": edif["source-layer"],
+                            filter: edif.filter || ["all"],
+                            type: "fill-extrusion",
+                            paint: {
+                                "fill-extrusion-color": "#94a3b8",
+                                "fill-extrusion-height": [
+                                    "coalesce",
+                                    ["get", "render_height"],
+                                    ["get", "height"],
+                                    8
+                                ],
+                                "fill-extrusion-base": [
+                                    "coalesce",
+                                    ["get", "render_min_height"],
+                                    ["get", "min_height"],
+                                    0
+                                ],
+                                "fill-extrusion-opacity": 0.8
+                            }
+                        });
+                    } catch (erro) {
+                        console.warn("Edifícios 3D:", erro);
+                    }
+                }
+            });
 
-            URL.revokeObjectURL(url);
+            const marcador = document.createElement("div");
+            marcador.className = "nexus-marker";
+            marcador.style.setProperty("--marker-color", "#f59e0b");
 
-        });
+            marcador.innerHTML = `
+                <div class="marker-pulse"></div>
+                <div class="marker-core">
+                    <span class="marker-icon">⌂</span>
+                </div>
+            `;
 
-    });
+            new maplibregl.Marker({
+                element: marcador,
+                anchor: "bottom"
+            })
+                .setLngLat([Number(obra.longitude), Number(obra.latitude)])
+                .addTo(mapa);
+        }
 
+        const obra = carregarObras().find(item => item.id === id);
 
-    render().catch(error => {
-
-        console.error(
-            "[NEXUS DETAIL] Erro:",
-            error
-        );
-
-
-        root.innerHTML = `
-
-            <div class="detail-card">
-
-                <h2>Não foi possível carregar os detalhes.</h2>
-
-                <p>
-                    Atualize a página ou retorne à plataforma.
-                </p>
-
-                <a href="index.html">
-                    Voltar ao NEXUS
-                </a>
-
-            </div>
-
-        `;
-
-    });
-
-
-})();
-
-</script>
-
+        if (!obra) {
+            mostrarErro();
+        } else {
+            renderizarObra(obra);
+        }
+    </script>
 
 </body>
-
 </html>
->>>>>>> b7224df (Backup antes da atualização NEXUS 2.0)
