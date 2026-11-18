@@ -1,21 +1,24 @@
-import { defineConfig } from "vite";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
-
-const raiz = dirname(fileURLToPath(import.meta.url));
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-    input: {
-        principal: resolve(raiz, "index.html"),
-        detalhes: resolve(raiz, "lugar.html")
-    },
+  // Permite publicar o projeto em um subdiretório do GitHub Pages.
+  base: './',
 
-    server: {
-        host: "0.0.0.0",
-        port: 5173
-    },
+  publicDir: 'public',
 
-    preview: {
-        host: "0.0.0.0"
-    }
+  server: {
+    host: '0.0.0.0',
+    port: 5173
+  },
+
+  preview: {
+    host: '0.0.0.0',
+    port: 4173
+  },
+
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    sourcemap: false
+  }
 });

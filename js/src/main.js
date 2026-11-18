@@ -1,4 +1,5 @@
 import '../../style.css';
+import { iniciarMapa } from '../mapa3d.js';
 import {
   getProjects,
   saveProject,
@@ -487,30 +488,58 @@ function connectExistingMap() {
 
 function initialise() {
   bindEvents();
+
   applySavedMapTheme();
   renderAll();
-  setProjectSelectCallback((id) => showProjectDetails(id));
+
+  setProjectSelectCallback((id) => {
+    showProjectDetails(id);
+  });
+
   setMeasurementCallback((result) => {
     $('#measureResult').hidden = result.count === 0;
     $('#measureValue').textContent = result.area || result.distance;
-    $('#measureDetail').textContent = `${result.count} ponto(s) · distância ${result.distance}${result.area ? ` · área ${result.area}` : ''}`;
+
+    $('#measureDetail').textContent =
+      `${result.count} ponto(s) · distância ${result.distance}` +
+      (result.area ? ` · área ${result.area}` : '');
   });
+
   subscribe(() => renderAll());
 
-  if (connectExistingMap()) return;
-  // Detecta o mapa inicializado pelos scripts antigos, sem reconstruí-lo.
-  let attempts = 0;
-  const timer = window.setInterval(() => {
-    attempts += 1;
-    if (connectExistingMap()) {
-      window.clearInterval(timer);
+  // Inicializa o mapa 3D diretamente no elemento da interface.
+  try {
+    const map = iniciarMapa('mapa');
+
+    if (!map) {
+      setMapStatus('Não foi possível iniciar o mapa 3D.', false);
+      console.error('NEXUS: a função iniciarMapa não retornou uma instância.');
       return;
     }
-    if (attempts >= 20) {
-      window.clearInterval(timer);
-      setMapStatus('Mapa não conectado · confira a cópia dos arquivos antigos e a linha de integração.', false);
-    }
-  }, 500);
+
+    registerMap(map);
+
+    setMapStatus('Motor cartográfico 3D conectado.', true);
+
+    // Atualiza os marcadores depois que o mapa estiver pronto.
+    refreshMapProjects(getProjects());
+
+    requestAnimationFrame(resizeMap);
+
+    map.once('load', () => {
+      requestAnimationFrame(resizeMap);
+    });
+
+    console.info('NEXUS: interface e mapa 3D inicializados.');
+
+  } catch (error) {
+    console.error('NEXUS: erro ao inicializar o mapa 3D:', error);
+
+    setMapStatus(
+      'Falha ao carregar o mapa. Verifique a conexão cartográfica.',
+      false
+    );
+  }
 }
 
 initialise();
